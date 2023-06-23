@@ -2,6 +2,10 @@
 # See: https://circleci.com/docs/configuration-reference
 version: 2.1
 
+orbs:
+  aws-eks: circleci/aws-eks@2.2.0
+  kubernetes: circleci/kubernetes@1.2.0
+  
 executors:
   my-custom-executor:
     docker:
