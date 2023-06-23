@@ -126,7 +126,8 @@ jobs:
             docker push $DOCKER_HUB_USERNAME/prj5-capstone-clouddevops
 
   deploy:
-    executor: aws-eks/python3
+    docker:
+      - image: cimg/base:stable
     parameters:
       cluster-name:
         description: |
@@ -160,14 +161,6 @@ jobs:
           cluster-name: << parameters.cluster-name >>
           aws-region: << parameters.aws-region >>
           install-kubectl: true
-      - kubernetes/create-or-update-resource:
-          resource-file-path: ./kubernetes/deployment.yml
-          resource-name: deployment/prj5-capstone-clouddevops
-          get-rollout-status: true
-          show-kubectl-command: true
-      - kubernetes/create-or-update-resource:
-          resource-file-path: ./kubernetes/aws-authen-cm.yml
-          resource-name: configmap/aws-auth
       - run:
           name: Test cluster
           command: |
