@@ -198,11 +198,6 @@ jobs:
             kubectl get deployment
             kubectl get pod -o wide
             kubectl get services
-      - run:
-          name: Cleaning up
-          command: |
-            docker system prune
-            kubectl delete deployment prj5-capstone-clouddevops
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
@@ -210,6 +205,10 @@ workflows:
   prj5-capstone-clouddevops:
     jobs:
       - prepare
+        filters:
+            branches:
+              only:
+                - master
       - lint:
           requires:
            - "prepare"
@@ -219,3 +218,4 @@ workflows:
       - deploy:
           requires:
             - "build"
+      - test
