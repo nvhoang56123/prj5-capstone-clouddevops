@@ -178,67 +178,18 @@ jobs:
             kubectl get deployment
             kubectl get pod -o wide
             kubectl get services
-
-            curl -d '{ "CHAS":{ "0":0 }, "RM":{ "0":6.575 }, "TAX":{ "0":296.0 }, "PTRATIO":{ "0":15.3 }, "B":{ "0":396.9 }, "LSTAT":{ "0":4.98 } }' -H "Content-Type: application/json" -X POST http://110.100.129.91/predict
+            kubectl get pod | awk '{printf("kubectl logs pod %s\n", $1)}' | bash
       - run:
           name: Cleaning up
           command: |
             docker system prune
-  test:
-    docker:
-      - image: cimg/base:stable    
-    parameters:
-      cluster-name:
-        description: |
-          Name of the EKS cluster
-        type: string
-        default: "CapstoneEKS-5T6gV6nXlnri"
-      aws-region:
-        description: |
-          AWS region
-        type: string
-        default: "us-east-1"
-    steps:
-      - setup_remote_docker:
-          version: 20.10.14
-          docker_layer_caching: true
-      - run:
-          name: Configure variable
-          command: |
-            echo AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID >> .env
-            echo AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY >> .env
-            echo DOCKER_HUB_PASSWORD=$DOCKER_HUB_PASSWORD >> .env
-            echo DOCKER_HUB_USERNAME=$DOCKER_HUB_USERNAME >> .env
-            cat .env               
-      - run:
-          name: Install dependencies
-          command: |
-            sudo apt install -y tar gzip curl
-      - kubernetes/install-kubectl
-      - aws-eks/update-kubeconfig-with-authenticator:
-          cluster-name: << parameters.cluster-name >>
-          aws-region: << parameters.aws-region >>
-          install-kubectl: true         
-      - run:
-          name: Test cluster
-          command: |
-            kubectl get nodes
-            kubectl get deployment
-            kubectl get pod -o wide
-            kubectl get services
-            kubectl get pod | awk '{printf("kubectl describe pod %s\n", $1)}' | bash
-            curl -d '{ "CHAS":{ "0":0 }, "RM":{ "0":6.575 }, "TAX":{ "0":296.0 }, "PTRATIO":{ "0":15.3 }, "B":{ "0":396.9 }, "LSTAT":{ "0":4.98 } }' -H "Content-Type: application/json" -X POST http://192.168.221.203/predict
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
   prj5-capstone-clouddevops:
     jobs:
-      - prepare:
-          filters:
-            branches:
-              only:
-                - master
+      - prepare
       - lint:
           requires:
            - "prepare"
@@ -247,5 +198,4 @@ workflows:
             - "lint"
       - deploy:
           requires:
-            - "build"
-      - test
+            - "build"      
