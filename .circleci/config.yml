@@ -166,6 +166,11 @@ jobs:
           name: Test cluster
           command: |
             kubectl get pod | awk '{printf("kubectl describe pod %s\n", $1)}' | bash
+      - kubernetes/create-or-update-resource:
+          resource-file-path: ./kubernetes/deployment.yml
+          resource-name: deployment/prj5-capstone-clouddevops
+          show-kubectl-command: true
+          get-rollout-status: true
       - run:
           name: Test cluster
           command: |
@@ -175,7 +180,10 @@ jobs:
             kubectl get services
       - run:
           name: Cleaning up
-          command: docker system prune
+          command: |
+            docker system prune
+            kubectl delete deployment prj5-capstone-clouddevops
+            
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
