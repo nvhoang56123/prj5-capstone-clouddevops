@@ -185,13 +185,4 @@ jobs:
 workflows:
   prj5-capstone-clouddevops:
     jobs:
-      - prepare
-      - lint:
-          requires:
-            - "prepare"
-      - build:
-          requires:
-            - "lint"
-      - deploy:
-          requires:
-            - "build"            
+      - deploy

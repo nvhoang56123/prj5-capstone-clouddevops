@@ -7,7 +7,7 @@ metadata:
   namespace: default
 spec:
   progressDeadlineSeconds: 3600
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: prj5-capstone-clouddevops
@@ -30,10 +30,10 @@ spec:
           resources:
             requests:
               memory: "128Mi"
-              cpu: "500m"
+              cpu: "100m"
             limits:
               memory: "128Mi"
-              cpu: "500m"
+              cpu: "100m"
 
 ---
 apiVersion: v1
