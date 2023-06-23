@@ -178,9 +178,8 @@ jobs:
             kubectl get deployment
             kubectl get pod -o wide
             kubectl get services
-            kubectl get pod | egrep prj5 | awk '{printf("kubectl logs %s\n", $1)}'
-            kubectl get pod | egrep prj5 | awk '{printf("kubectl logs %s\n", $1)}' | bash            
-            curl -d '{ "CHAS":{ "0":0 }, "RM":{ "0":6.575 }, "TAX":{ "0":296.0 }, "PTRATIO":{ "0":15.3 }, "B":{ "0":396.9 }, "LSTAT":{ "0":4.98 } }' -H "Content-Type: application/json" -X POST http://192.168.221.203:3000/predict
+            kubectl get virtualservice
+
       - run:
           name: Cleaning up
           command: |
