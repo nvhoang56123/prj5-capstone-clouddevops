@@ -94,4 +94,6 @@ workflows:
   prj5-capstone-clouddevops:
     jobs:
       - build
-
+      - lint:
+        requires:
+          - "build"
