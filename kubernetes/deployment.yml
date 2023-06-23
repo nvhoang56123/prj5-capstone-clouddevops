@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prj5-capstone-clouddevops
+  labels:
+    app: prj5-capstone-clouddevops
+  namespace: default
+spec:
+  progressDeadlineSeconds: 3600
+  replicas: 3
+  selector:
+    matchLabels:
+      app: prj5-capstone-clouddevops
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: prj5-capstone-clouddevops
+    spec:
+      containers:
+        - image: nvhoang56123/prj5-capstone-clouddevops:1.0.0
+          imagePullPolicy: Always
+          name: prj5-capstone-clouddevops
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "500m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prj5-capstone-clouddevops
+  labels:
+    app: prj5-capstone-clouddevops
+spec:
+  type: LoadBalancer
+  selector:
+    app: prj5-capstone-clouddevops
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30000
+      protocol: TCP
