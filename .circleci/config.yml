@@ -161,8 +161,7 @@ jobs:
           name: Install dependencies
           command: |
             sudo apt install -y tar gzip curl
-            cat ~/.kube/config   
-            aws sts get-caller-identity 
+            cat ~/.kube/config               
       - kubernetes/create-or-update-resource:
           resource-file-path: ./kubernetes/deployment.yml
           resource-name: deployment/prj5-capstone-clouddevops
