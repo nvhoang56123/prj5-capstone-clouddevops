@@ -204,8 +204,8 @@ jobs:
 workflows:
   prj5-capstone-clouddevops:
     jobs:
-      - prepare
-        filters:
+      - prepare:
+          filters:
             branches:
               only:
                 - master
