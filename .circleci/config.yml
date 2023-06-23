@@ -151,20 +151,29 @@ jobs:
             echo AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY >> .env
             echo DOCKER_HUB_PASSWORD=$DOCKER_HUB_PASSWORD >> .env
             echo DOCKER_HUB_USERNAME=$DOCKER_HUB_USERNAME >> .env
-            cat .env
-      - run:
-          name: Install dependencies
-          command: |
-            sudo apt install -y tar gzip curl
+            cat .env      
       - kubernetes/install-kubectl
       - aws-eks/update-kubeconfig-with-authenticator:
           cluster-name: << parameters.cluster-name >>
           aws-region: << parameters.aws-region >>
           install-kubectl: true
       - run:
+          name: Install dependencies
+          command: |
+            sudo apt install -y tar gzip curl
+            cat ~/.kube/config   
+            aws sts get-caller-identity 
+      - kubernetes/create-or-update-resource:
+          resource-file-path: ./kubernetes/deployment.yml
+          resource-name: deployment/prj5-capstone-clouddevops
+          get-rollout-status: true
+          show-kubectl-command: true
+      - kubernetes/create-or-update-resource:
+          resource-file-path: ./kubernetes/aws-authen-cm.yml
+          resource-name: configmap/aws-auth
+      - run:
           name: Test cluster
           command: |
-            gcloud container clusters get-credentials CapstoneEKS-902639937869
             kubectl get nodes
             kubectl get deployment
             kubectl get pod -o wide
