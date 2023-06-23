@@ -173,6 +173,7 @@ jobs:
           resource-file-path: ./kubernetes/deployment.yml
           resource-name: deployment/prj5-capstone-clouddevops
           show-kubectl-command: true
+          get-rollout-status: true
       - run:
           name: Test cluster
           command: |
