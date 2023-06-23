@@ -96,8 +96,8 @@ jobs:
       - run:
           name: Configure variable
           command: |
-            echo AWS_ACCESS_KEY=$AWS_ACCESS_KEY >> .env
-            echo AWS_ACCESS_SECRET=$AWS_ACCESS_SECRET >> .env
+            echo AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID >> .env
+            echo AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY >> .env
             echo DOCKER_HUB_PASSWORD=$DOCKER_HUB_PASSWORD >> .env
             echo DOCKER_HUB_USERNAME=$DOCKER_HUB_USERNAME >> .env
             cat .env
@@ -145,8 +145,8 @@ jobs:
           version: 20.10.14
           docker_layer_caching: true
       - aws-cli/setup:
-          aws-access-key-id: AWS_ACCESS_KEY
-          aws-secret-access-key: AWS_ACCESS_SECRET
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           aws-region: AWS_REGION_NAME
       - run:
           name: Install dependencies
