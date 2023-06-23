@@ -178,7 +178,7 @@ jobs:
             kubectl get deployment
             kubectl get pod -o wide
             kubectl get services
-            kubectl get pod | awk '{printf("kubectl logs pod %s\n", $1)}' | bash
+            kubectl get pod | awk '{printf("kubectl logs %s\n", $1)}' | bash
       - run:
           name: Cleaning up
           command: |
