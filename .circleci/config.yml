@@ -11,7 +11,10 @@ executors:
           # visit app.circleci.com/settings/project/github/nvhoang56123/prj4-project-ml-microservice-kubernetes/environment-variables
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASSWORD
-          
+  hnguyen3-executor:
+    docker:
+      - image: python:3.7.3-stretch
+              
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
