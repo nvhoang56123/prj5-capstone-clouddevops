@@ -20,7 +20,6 @@ jobs:
       - restore_cache:
           keys:
             - dependencies-{{ checksum "requirements.txt" }}
-
       - run:
           name: Install python dependencies
           working_directory: .
@@ -68,10 +67,8 @@ jobs:
           paths:
             - ./venv
           key: dependencies-{{ checksum "requirements.txt" }}
-
   build:
-    docker:
-      - image: cimg/python:3.11.4
+    executor:  hnguyen3-executor
     parameters:
       cluster-name:
         description: |
@@ -88,10 +85,6 @@ jobs:
       - setup_remote_docker:
           version: 20.10.14
           docker_layer_caching: true
-      - run:
-          name: Install dependencies
-          command: |
-            sudo apt install -y tar gzip curl
       - kubernetes/install-kubectl
       - run:
           name: Configure variable
@@ -106,19 +99,8 @@ jobs:
           command: |
             docker login -u "$DOCKER_HUB_USERNAME" -p $(echo "$DOCKER_HUB_PASSWORD")
       - run:
-          name: Load Docker image layer cache
-          command: |
-            set +o pipefail
-            docker load -i caches/prj5-capstone-clouddevops.tar | true
-      - run:
           name: Build application Docker image
           command: docker build --cache-from=prj5-capstone-clouddevops -t prj5-capstone-clouddevops .
-      - run:
-          name: Save Docker image layer cache
-          command: |
-            chmod -R 777 .
-            mkdir -p caches
-            docker save -o caches/prj5-capstone-clouddevops.tar prj5-capstone-clouddevops
       - run:
           name: Push Docker Image
           command: |
@@ -126,8 +108,7 @@ jobs:
             docker push $DOCKER_HUB_USERNAME/prj5-capstone-clouddevops
 
   deploy:
-    docker:
-      - image: cimg/base:stable
+    executor:  hnguyen3-executor
     parameters:
       cluster-name:
         description: |
@@ -160,7 +141,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            sudo apt install -y tar gzip curl
+            sudo apt install -y curl
             cat ~/.kube/config               
       - run:
           name: Remove old deployment
@@ -172,19 +153,24 @@ jobs:
           show-kubectl-command: true
           get-rollout-status: true
       - run:
-          name: Test cluster
+          name: Double check cluster's deployment
           command: |
+            echo ""
+            echo "------GET NODES------"
             kubectl get nodes
+            echo ""
+            echo "------GET DEPLOYMENT------"
             kubectl get deployment
+            echo ""
+            echo "------GET DEPLOYED POD------"
             kubectl get pod -o wide
+            echo ""
+            echo "------GET SERVICE RUNNING------"
             kubectl get services
 
-            if curl "http://a3e6d69a2446446798f9a20de200169e-688682414.us-east-1.elb.amazonaws.com" | grep "Udacity"
-            then
-              return 0
-            else
-              return 1
-            fi   
+            echo ""
+            echo "------QUICK SMOKE TEST------"
+            curl "http://a3e6d69a2446446798f9a20de200169e-688682414.us-east-1.elb.amazonaws.com" | grep -i "prj5"
 
       - run:
           name: Cleaning up
