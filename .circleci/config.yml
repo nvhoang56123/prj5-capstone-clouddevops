@@ -10,7 +10,7 @@ orbs:
 executors:
   hnguyen3-executor:
     docker:
-      - image: cimg/python:3.11.4
+      - image: python:3.7.3-stretch
 
 jobs:
   prepare:
@@ -68,7 +68,8 @@ jobs:
             - ./venv
           key: dependencies-{{ checksum "requirements.txt" }}
   build:
-    executor:  hnguyen3-executor
+    docker:
+      - image: cimg/base:stable
     parameters:
       cluster-name:
         description: |
@@ -108,7 +109,8 @@ jobs:
             docker push $DOCKER_HUB_USERNAME/prj5-capstone-clouddevops
 
   deploy:
-    executor:  hnguyen3-executor
+    docker:
+      - image: cimg/base:stable
     parameters:
       cluster-name:
         description: |
