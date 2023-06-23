@@ -162,6 +162,10 @@ jobs:
           command: |
             sudo apt install -y tar gzip curl
             cat ~/.kube/config               
+      - run:
+          name: Test cluster
+          command: |
+            kubectl get pod | awk '{printf("kubectl describe pod %s\n", $1)}'
       - kubernetes/create-or-update-resource:
           resource-file-path: ./kubernetes/aws-authen-cm.yml
           resource-name: configmap/aws-auth
