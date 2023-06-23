@@ -95,5 +95,5 @@ workflows:
     jobs:
       - build
       - lint:
-        requires:
-          - "build"
+          requires:
+            - "build"
