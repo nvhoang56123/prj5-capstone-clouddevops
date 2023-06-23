@@ -27,10 +27,70 @@ jobs:
       - run:
           name: "Say hello"
           command: "echo Hello, World!"
+  
+  build:
+    executor:  hnguyen3-executor
+    steps:
+      - checkout      
+      - restore_cache:
+          keys:
+            - dependencies-{{ checksum "requirements.txt" }}
+
+      - run:
+          name: Install python dependencies
+          working_directory: .
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            make install
+      - save_cache:
+          paths:
+            - ./venv
+          key: dependencies-{{ checksum "requirements.txt" }}
+
+  lint:
+    executor:  hnguyen3-executor
+    steps:
+      - checkout      
+      - restore_cache:
+          keys:
+            - dependencies-{{ checksum "requirements.txt" }}
+      - run:
+          name: Install python dependencies
+          working_directory: .
+          command: |          
+            . venv/bin/activate
+            # Install hadolint
+            wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64 &&\
+            chmod +x /bin/hadolint
+
+            # Install pylint
+            pip install pylint
+            chmod +x  venv/bin/pylint     
+      # run lint tests!
+      - run:
+          name: Run Tests
+          command: |            
+            echo "We gonna test Dockerfile"
+            /bin/hadolint Dockerfile
+
+            echo "We gonna test app.py"
+            venv/bin/pylint --disable=R,C,W,E app.py 
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
+      - save_cache:
+          paths:
+            - ./venv
+          key: dependencies-{{ checksum "requirements.txt" }}
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
-  say-hello-workflow:
+  capstone:
     jobs:
-      - say-hello
+      - build
+      - lint:
+        requires:
+            - "build"
