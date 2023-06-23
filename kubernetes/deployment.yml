@@ -22,7 +22,7 @@ spec:
         app: prj5-capstone-clouddevops
     spec:
       containers:
-        - image: nvhoang56123/prj5-capstone-clouddevops:1.0.0
+        - image: nvhoang56123/prj5-capstone-clouddevops:latest
           imagePullPolicy: Always
           name: prj5-capstone-clouddevops
           ports:
@@ -30,10 +30,10 @@ spec:
           resources:
             requests:
               memory: "128Mi"
-              cpu: "100m"
+              cpu: "500m"
             limits:
               memory: "128Mi"
-              cpu: "100m"
+              cpu: "500m"
 
 ---
 apiVersion: v1
