@@ -165,7 +165,7 @@ jobs:
       - run:
           name: Remove old deployment
           command: |
-            kubectl delete deployment kubernetes/deployment.yml
+            kubectl delete deployment prj5-capstone-clouddevops
       - kubernetes/create-or-update-resource:
           resource-file-path: ./kubernetes/deployment.yml
           resource-name: deployment/prj5-capstone-clouddevops
