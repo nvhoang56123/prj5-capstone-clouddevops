@@ -14,7 +14,7 @@ executors:
   hnguyen3-executor:
     docker:
       - image: python:3.7.3-stretch
-              
+
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
@@ -91,9 +91,7 @@ jobs:
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
-  capstone:
+  prj5-capstone-clouddevops:
     jobs:
       - build
-      - lint:
-        requires:
-            - "build"
+
