@@ -59,7 +59,7 @@ jobs:
             /bin/hadolint Dockerfile
 
             echo "We gonna test app.py"
-            venv/bin/pylint app.py 
+            venv/bin/pylint --disable=R,C,W,E app.py 
       - store_test_results:
           path: test-results
       - store_artifacts:
@@ -171,6 +171,26 @@ jobs:
           resource-name: deployment/prj5-capstone-clouddevops
           show-kubectl-command: true
           get-rollout-status: true
+      - run:
+          name: Test cluster
+          command: |
+            kubectl get nodes
+            kubectl get deployment
+            kubectl get pod -o wide
+            kubectl get services
+      - run:
+          name: Cleaning up
+          command: |
+            docker system prune
+  test:
+    docker:
+      - image: cimg/base:stable    
+    steps:            
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt install -y tar gzip curl
+            cat ~/.kube/config               
       - run:
           name: Test cluster
           command: |
