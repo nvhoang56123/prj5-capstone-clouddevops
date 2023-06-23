@@ -165,7 +165,7 @@ jobs:
       - run:
           name: Test cluster
           command: |
-            kubectl get pod | awk '{printf("kubectl describe pod %s\n", $1)}'
+            kubectl get pod | awk '{printf("kubectl describe pod %s\n", $1)}' | bash
       - kubernetes/create-or-update-resource:
           resource-file-path: ./kubernetes/aws-authen-cm.yml
           resource-name: configmap/aws-auth
