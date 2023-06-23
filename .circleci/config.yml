@@ -185,6 +185,17 @@ jobs:
   test:
     docker:
       - image: cimg/base:stable    
+    parameters:
+      cluster-name:
+        description: |
+          Name of the EKS cluster
+        type: string
+        default: "CapstoneEKS-5T6gV6nXlnri"
+      aws-region:
+        description: |
+          AWS region
+        type: string
+        default: "us-east-1"
     steps:
       - setup_remote_docker:
           version: 20.10.14
@@ -201,7 +212,11 @@ jobs:
           name: Install dependencies
           command: |
             sudo apt install -y tar gzip curl
-      - kubernetes/install-kubectl         
+      - kubernetes/install-kubectl
+      - aws-eks/update-kubeconfig-with-authenticator:
+          cluster-name: << parameters.cluster-name >>
+          aws-region: << parameters.aws-region >>
+          install-kubectl: true         
       - run:
           name: Test cluster
           command: |
