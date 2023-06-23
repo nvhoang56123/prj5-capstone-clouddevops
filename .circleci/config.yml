@@ -183,10 +183,19 @@ jobs:
           command: |
             docker system prune
             kubectl delete deployment prj5-capstone-clouddevops
-            
+
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
   prj5-capstone-clouddevops:
     jobs:
+      - prepare
+      - lint:
+          requires:
+            - "prepare"
+      - build:
+          requires:
+            - "lint"
       - deploy
+          requires:
+            - "build"
