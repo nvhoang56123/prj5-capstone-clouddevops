@@ -190,7 +190,7 @@ jobs:
           name: Install dependencies
           command: |
             sudo apt install -y tar gzip curl
-            cat ~/.kube/config               
+      - kubernetes/install-kubectl         
       - run:
           name: Test cluster
           command: |
