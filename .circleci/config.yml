@@ -163,9 +163,9 @@ jobs:
             sudo apt install -y tar gzip curl
             cat ~/.kube/config               
       - run:
-          name: Test cluster
+          name: Remove old deployment
           command: |
-            kubectl get pod | awk '{printf("kubectl describe pod %s\n", $1)}' | bash
+            kubectl delete deployment kubernetes/deployment.yml
       - kubernetes/create-or-update-resource:
           resource-file-path: ./kubernetes/deployment.yml
           resource-name: deployment/prj5-capstone-clouddevops
@@ -178,6 +178,13 @@ jobs:
             kubectl get deployment
             kubectl get pod -o wide
             kubectl get services
+
+            if curl "http://a3e6d69a2446446798f9a20de200169e-688682414.us-east-1.elb.amazonaws.com" | grep "Udacity"
+            then
+              return 0
+            else
+              return 1
+            fi   
 
       - run:
           name: Cleaning up
