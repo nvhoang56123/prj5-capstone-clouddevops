@@ -5,16 +5,8 @@ version: 2.1
 orbs:
   aws-eks: circleci/aws-eks@2.2.0
   kubernetes: circleci/kubernetes@1.2.0
-  
+
 executors:
-  my-custom-executor:
-    docker:
-      - image: cimg/base:stable
-        auth:
-          # ensure you have first added these secrets
-          # visit app.circleci.com/settings/project/github/nvhoang56123/prj4-project-ml-microservice-kubernetes/environment-variables
-          username: $DOCKER_HUB_USER
-          password: $DOCKER_HUB_PASSWORD
   hnguyen3-executor:
     docker:
       - image: python:3.7.3-stretch
@@ -151,6 +143,14 @@ jobs:
       - setup_remote_docker:
           version: 20.10.14
           docker_layer_caching: true
+      - run:
+          name: Configure variable
+          command: |
+            echo AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID >> .env
+            echo AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY >> .env
+            echo DOCKER_HUB_PASSWORD=$DOCKER_HUB_PASSWORD >> .env
+            echo DOCKER_HUB_USERNAME=$DOCKER_HUB_USERNAME >> .env
+            cat .env
       - run:
           name: Install dependencies
           command: |
