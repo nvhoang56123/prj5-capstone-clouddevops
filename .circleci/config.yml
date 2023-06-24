@@ -8,13 +8,16 @@ orbs:
   aws-cli: circleci/aws-cli@3.1.5
 
 executors:
-  hnguyen3-executor:
+  py3-executor:
     docker:
       - image: python:3.7.3-stretch
+  base-executor:
+    docker:
+      - image: cimg/base:stable
 
 jobs:
   prepare:
-    executor:  hnguyen3-executor
+    executor:  py3-executor
     steps:
       - checkout      
       - restore_cache:
@@ -32,7 +35,7 @@ jobs:
             - ./venv
           key: dependencies-{{ checksum "requirements.txt" }}
   lint:
-    executor:  hnguyen3-executor
+    executor:  py3-executor
     steps:
       - checkout      
       - restore_cache:
@@ -68,14 +71,12 @@ jobs:
             - ./venv
           key: dependencies-{{ checksum "requirements.txt" }}
   build:
-    docker:
-      - image: cimg/base:stable
+    executor:  base-executor
     steps:
       - checkout
       - setup_remote_docker:
           version: 20.10.14
           docker_layer_caching: true
-      - kubernetes/install-kubectl
       - run:
           name: Configure variable
           command: |
@@ -98,8 +99,7 @@ jobs:
             docker push $DOCKER_HUB_USERNAME/prj5-capstone-clouddevops
 
   deploy:
-    docker:
-      - image: cimg/base:stable   
+    executor:  base-executor   
     steps:
       - checkout                
       - aws-eks/update-kubeconfig-with-authenticator:
