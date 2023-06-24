@@ -112,19 +112,13 @@ jobs:
     docker:
       - image: cimg/base:stable   
     steps:
-      - checkout
-      - setup_remote_docker:
-          version: 20.10.14
-          docker_layer_caching: true
+      - checkout      
       - run:
           name: Configure variable
           command: |
             echo AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID >> .env
-            echo AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY >> .env
-            echo DOCKER_HUB_PASSWORD=$DOCKER_HUB_PASSWORD >> .env
-            echo DOCKER_HUB_USERNAME=$DOCKER_HUB_USERNAME >> .env
-            cat .env      
-      - kubernetes/install-kubectl
+            echo AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY >> .env            
+            cat .env            
       - aws-eks/update-kubeconfig-with-authenticator:
           cluster-name: "CapstoneEKS-5T6gV6nXlnri"
           aws-region: "us-east-1"
