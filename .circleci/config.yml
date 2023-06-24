@@ -112,22 +112,11 @@ jobs:
     docker:
       - image: cimg/base:stable   
     steps:
-      - checkout      
-      - run:
-          name: Configure variable
-          command: |
-            echo AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID >> .env
-            echo AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY >> .env            
-            cat .env            
+      - checkout                
       - aws-eks/update-kubeconfig-with-authenticator:
           cluster-name: "CapstoneEKS-5T6gV6nXlnri"
           aws-region: "us-east-1"
           install-kubectl: true
-      - run:
-          name: Install dependencies
-          command: |
-            sudo apt install -y curl
-            cat ~/.kube/config               
       - run:
           name: Remove old deployment
           command: |
@@ -140,6 +129,9 @@ jobs:
       - run:
           name: Double check cluster's deployment
           command: |
+            echo ""
+            echo "------INSTALL DEPENDENCIES------"
+            sudo apt install -y curl
             echo ""
             echo "------GET NODES------"
             kubectl get nodes
@@ -162,8 +154,6 @@ jobs:
           command: |
             docker system prune
 
-# Orchestrate jobs using workflows
-# See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
   prj5-capstone-clouddevops:
     jobs:
