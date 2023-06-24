@@ -146,15 +146,13 @@ jobs:
 workflows:
   prj5-capstone-clouddevops:
     jobs:
-      - prepare:
-          filters:
-            branches:
-              only:
-                - master  
+      - prepare
       - lint:
           requires:
            - "prepare"
       - build:
           requires:
             - "lint"
-      - deploy
+      - deploy:
+          requires:
+            - "build"
