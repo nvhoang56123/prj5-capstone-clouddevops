@@ -70,17 +70,6 @@ jobs:
   build:
     docker:
       - image: cimg/base:stable
-    parameters:
-      cluster-name:
-        description: |
-          Name of the EKS cluster
-        type: string
-        default: "CapstoneEKS-5T6gV6nXlnri"
-      aws-region:
-        description: |
-          AWS region
-        type: string
-        default: "us-east-1"
     steps:
       - checkout
       - setup_remote_docker:
