@@ -110,18 +110,7 @@ jobs:
 
   deploy:
     docker:
-      - image: cimg/base:stable
-    parameters:
-      cluster-name:
-        description: |
-          Name of the EKS cluster
-        type: string
-        default: "CapstoneEKS-5T6gV6nXlnri"
-      aws-region:
-        description: |
-          AWS region
-        type: string
-        default: "us-east-1"
+      - image: cimg/base:stable   
     steps:
       - checkout
       - setup_remote_docker:
@@ -137,8 +126,8 @@ jobs:
             cat .env      
       - kubernetes/install-kubectl
       - aws-eks/update-kubeconfig-with-authenticator:
-          cluster-name: << parameters.cluster-name >>
-          aws-region: << parameters.aws-region >>
+          cluster-name: "CapstoneEKS-5T6gV6nXlnri"
+          aws-region: "us-east-1"
           install-kubectl: true
       - run:
           name: Install dependencies
@@ -184,13 +173,15 @@ jobs:
 workflows:
   prj5-capstone-clouddevops:
     jobs:
-      - prepare
+      - prepare:
+          filters:
+            branches:
+              only:
+                - master  
       - lint:
           requires:
            - "prepare"
       - build:
           requires:
             - "lint"
-      - deploy:
-          requires:
-            - "build"      
+      - deploy
